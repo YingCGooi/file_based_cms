@@ -1,0 +1,24 @@
+<ul>
+  <% @files.each do |file| %>
+    <li>
+      <a href="/<%=file%>"><%= file %></a>
+      <a href="/<%=file%>/edit">Edit</a>
+      <form class="delete" action="/<%=file%>/delete" method="post">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  <% end %>
+</ul>
+
+<br />
+
+<a href="/new">New Document</a>
+
+<hr>
+
+<% content_for :username do %>
+  <p class="user-status">Signed in as <%= @username %>.</p>
+  <form action="/users/signout" method="post">
+    <button type="submit">Sign Out</button>
+  </form>
+<% end %>

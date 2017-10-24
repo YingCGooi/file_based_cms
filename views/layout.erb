@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= SiteConfig.title %></title>
+    <link href="/stylesheets/reset.css" rel="stylesheet" type="text/css"></link>
+    <link href="/stylesheets/main.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body>
+    <% if session[:message] %>
+      <div class="message">
+        <p><%= session.delete(:message) %></p>
+      </div>
+    <% end %>    
+
+    <br />
+
+    <%= yield %>
+
+    <script src="script.js"></script>
+    <footer>
+      <p><%= yield_content :username %></p>
+    </footer>
+  </body>
+</html>

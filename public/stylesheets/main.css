@@ -1,0 +1,48 @@
+h1 {
+  font-size: 32px;
+  margin: 20px 0px 10px 0px;
+}
+
+h3 {
+  font-size: 24px;
+  margin: 15px 0px 10px 0px;
+}
+
+h4 {
+  font-size: 18px;
+  margin: 15px 0px 10px 0px;
+}
+
+a {
+  font-size: 18px;
+}
+
+body {
+  font-family: sans-serif;
+  padding: 10px 20px;
+}
+
+.text-box {
+  height: 500px;
+  font-size: 20px;
+}
+
+.message {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #FFFFD0;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.delete {
+  display: inline;
+  margin: 0px;
+  padding: 0px;
+}
+
+.user-status {
+  font-style: italic;
+  font-size: 0.9em;
+}
