@@ -12,7 +12,7 @@ require File.join(File.dirname(__FILE__), 'environment')
 configure(:development) do
   enable :sessions
   set :session_secret, 'secret'
-  # set :erb, :escape_html => true
+  set :erb, :escape_html => true
 end
 
 ROOT = File.expand_path('..', __FILE__)
