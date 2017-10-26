@@ -1,7 +1,5 @@
-<h3>Content Management System</h3>
-<h2>Please Sign-in to Continue</h2>
-<br />
-<form action="/users/signin" method="post">
+<h3>Registration</h3>
+<form action="/users/signup" method="post">
   <div>
     <label for="username">Username:
       <input type="text" name="username" value="<%=@username%>"/>
@@ -12,7 +10,5 @@
       <input type="password" name="password" value="<%=@password%>"/>
     </label>
   </div>
-  <button type="submit">Sign In</button>
+  <button type="submit">Register Me!</button>
 </form>
-
-<a href="/users/signup"><button type="submit">Sign Up</button></a>

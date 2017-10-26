@@ -4,6 +4,7 @@
     <title><%= SiteConfig.title %></title>
     <link href="/stylesheets/reset.css" rel="stylesheet" type="text/css"></link>
     <link href="/stylesheets/main.css" rel="stylesheet" type="text/css"></link>
+    <link href="https://fonts.googleapis.com/css?family=Lato:200,300,400" rel="stylesheet"></link>
   </head>
   <body>
     <% if session[:message] %>
@@ -14,11 +15,14 @@
 
     <br />
 
-    <%= yield %>
+    <%== yield %>
 
-    <script src="script.js"></script>
+    <hr />
     <footer>
-      <p><%= yield_content :username %></p>
+      <p><%== yield_content :username %></p>
+      <% if !home_page? %>
+        <a href="/">Home</a>
+      <% end %>
     </footer>
   </body>
 </html>

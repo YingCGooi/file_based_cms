@@ -14,11 +14,11 @@ h4 {
 }
 
 a {
-  font-size: 18px;
+  font-size: 19px;
 }
 
 body {
-  font-family: sans-serif;
+  font-family: Lato, sans-serif;
   padding: 10px 20px;
 }
 
@@ -36,13 +36,31 @@ body {
   display: inline-block;
 }
 
-.delete {
+button {
   display: inline;
   margin: 0px;
   padding: 0px;
+  width: 8em;
+  height: 2em;
 }
 
 .user-status {
   font-style: italic;
   font-size: 0.9em;
 }
+
+ul li {
+  padding-bottom: 10px;
+}
+
+.url-input {
+  width: 80%;
+  height: 1.5em;
+  font-size: 20px;
+  font-family: Lato, sans-serif;
+  font-weight: 300;
+  display: block;
+  margin: 10px 0px;
+}
+
+

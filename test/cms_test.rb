@@ -13,9 +13,8 @@ class CMSTest < Minitest::Test
   end
 
   def setup
-    # post '/users/signin', username: 'admin', password: 'secret'
-
     Dir.mkdir('test/data') unless Dir.exist?('test/data')
+    File.write(credentials_file_path, "---\nadmin: $2a$10$O6ztkvgjtIR.wFpm71NrVuvPvilNynEaq0G.zmVm/jXB95FBZ.Zi2\n")
   end
 
   def teardown
@@ -155,8 +154,9 @@ class CMSTest < Minitest::Test
     assert_equal "Welcome!", session[:message]
     assert_equal "admin", session[:username]
 
-    get last_response["Location"]
     create_document 'about.txt'
+
+    get '/'
     assert_equal 200, last_response.status
 
     [ 
@@ -243,5 +243,47 @@ class CMSTest < Minitest::Test
     post '/example.txt/delete'
     assert_equal 302, last_response.status
     assert_equal 'You must be signed in to do that.', session[:message]      
+  end
+
+  def test_duplicate_file
+    create_document 'hello.txt'
+
+    post '/hello.txt/copy', {}, admin_session
+    assert_equal 302, last_response.status
+    assert_includes(data_dir { Dir['*'] }, 'hello(2).txt')
+
+    post '/hello.txt/copy', {}, admin_session
+    assert_includes(data_dir { Dir['*'] }, 'hello(3).txt')
+
+    post '/hello(2).txt/delete', {}, admin_session
+    refute_includes(data_dir { Dir['*'] }, 'hello(2).txt')
+
+    post '/hello.txt/copy', {}, admin_session
+    assert_includes(data_dir { Dir['*'] }, 'hello(2).txt')
+
+    create_document 'copy_this.md', '## Copy This!'
+
+    24.times { post '/copy_this.md/copy' }
+    assert_includes(data_dir { Dir['*'] }, 'copy_this(25).md')
+    assert_includes(data_dir { File.read('copy_this(24).md')}, '## Copy This!' )
+  end
+
+  def test_signup
+    get '/users/signup'
+    assert_equal 200, last_response.status
+    assert_match(/Username:\s*<input type="text"/, last_response.body)
+    assert_match(/Password:\s*<input type="password"/, last_response.body)
+
+    post '/users/signup', username: 'hello', password: '123'
+    assert_equal 302, last_response.status
+    assert_match(/hello.+has been created/, session[:message])
+
+    post '/users/signin', username: 'hello', password: '123'
+    assert_equal 302, last_response.status
+    assert_match(/Welcome/, session[:message])
+
+    get '/'
+    assert_equal 200, last_response.status
+    assert_match(/signed in as hello/i, last_response.body)
   end
 end

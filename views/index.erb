@@ -6,6 +6,9 @@
       <form class="delete" action="/<%=file%>/delete" method="post">
         <button type="submit">Delete</button>
       </form>
+      <form class="copy" action="/<%=file%>/copy" method="post">
+        <button type="submit">Duplicate</button>
+      </form>
     </li>
   <% end %>
 </ul>
@@ -13,8 +16,8 @@
 <br />
 
 <a href="/new">New Document</a>
-
-<hr>
+<a>|</a>
+<a href="/upload">Upload Image</a>
 
 <% content_for :username do %>
   <p class="user-status">Signed in as <%= @username %>.</p>

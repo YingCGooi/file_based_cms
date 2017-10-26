@@ -13,6 +13,7 @@ gem 'minitest'
 gem 'minitest-reporters'
 gem 'redcarpet'
 gem 'bcrypt'
+gem 'pry'
 
 group :production do
   gem "puma"
@@ -20,7 +21,7 @@ end
 
 group :development do
   gem 'pry'
-  gem 'rubocop'
+  gem 'rubocop', "~> 0.46.0"
 end
 
 group :test do
