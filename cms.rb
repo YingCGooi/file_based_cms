@@ -6,7 +6,6 @@ require 'sinatra/content_for'
 require 'tilt/erubis'
 require 'yaml'
 require 'bcrypt'
-require 'pry'
 require 'erubis'
 require File.join(File.dirname(__FILE__), 'environment')
 
