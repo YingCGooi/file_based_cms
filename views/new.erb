@@ -1,6 +1,6 @@
 <form action="/new" method="post">
   <label for="filename">Add a new document:</label>
   <br />
-  <input class="new" type="text" name="filename" placeholder="New Document.txt" value="<%= params[:filename] %>"></input>
+  <input class="new" type="text" name="filename" placeholder="New Document.txt" value="<%= h(params[:filename]) %>"></input>
   <button type="submit">Create</button>
 </form>

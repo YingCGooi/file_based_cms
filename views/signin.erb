@@ -4,12 +4,12 @@
 <form action="/users/signin" method="post">
   <div>
     <label for="username">Username:
-      <input type="text" name="username" value="<%=@username%>"/>
+      <input type="text" name="username" value="<%=h(@username%>)"/>
     </label>
   </div>
   <div>
     <label for="password">Password:
-      <input type="password" name="password" value="<%=@password%>"/>
+      <input type="password" name="password" value="<%=h(@password)%>"/>
     </label>
   </div>
   <button type="submit">Sign In</button>
