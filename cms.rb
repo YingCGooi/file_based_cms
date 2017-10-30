@@ -19,7 +19,7 @@ ROOT = File.expand_path('..', __FILE__)
 
 before do
   Dir.chdir(ROOT)
-  @files = data_dir { Dir["*"].sort }
+  @files = data_dir { Dir["*.{md,txt}"].sort }
   @passwords = YAML.load_file(credentials_file_path)
 end
 
@@ -50,15 +50,16 @@ def render_markdown(file)
   markdown.render(file)
 end
 
-def load_file_content(filename)
-  content = data_dir { File.read(filename) }
+def load_file_content(filename, current_work_dir: false)
+  content = 
+    current_work_dir ? File.read(filename) : data_dir { File.read(filename) }
 
   case File.extname(filename)
+  when ".md"
+    erb render_markdown(content)
   when ".txt"
     headers["Content-Type"] = "text/plain"
     content
-  when ".md"
-    erb render_markdown(content)
   end
 end
 
@@ -91,6 +92,12 @@ def user_signed_in?
   session.key?(:username)
 end
 
+def file_base_ext_names(filename)
+  ext = File.extname(filename)
+  basename = File.basename(filename, ext)
+  [filename, basename, ext]
+end
+
 def basename(filename, extension)
   filename[/.+(?=\(\d+\)#{extension}$)/] || File.basename(filename, extension)
 end
@@ -120,6 +127,17 @@ def valid_img_url(url)
   url.length < 256 && url[/^https?:\/\//] && %[.jpg jpeg .png .gif .bmp tiff ashx].include?(url[-4..-1])
 end
 
+def format_url_for_filename(url)
+  url.split('/')
+     .last[/.+(?=\..{2,4})/]
+     .gsub(/\W/, '')
+     .concat('.md')
+end
+
+def edited?(filename, content)
+  data_dir { File.read(filename) } != content
+end
+
 # index page
 get '/' do
   if !session[:username]
@@ -147,10 +165,10 @@ get '/upload' do
 end
 
 get '/:filename' do
-  filename = params[:filename]
+  filename = File.join(data_dir, File.basename(params[:filename]))
 
   if data_dir { !File.file?(filename) }
-    session[:message] = "#{filename} does not exist."
+    session[:message] = "#{params[:filename]} does not exist."
     redirect "/"
   end
 
@@ -160,10 +178,25 @@ end
 get '/:filename/edit' do
   require_signed_in_user
 
-  filename = params[:filename]
+  filename, @basename, ext = file_base_ext_names(params[:filename])
+
   @file = data_dir { File.read(filename) }
+  if data_dir { Dir.exist?("#{@basename}") }
+    @versions = Dir.chdir(data_dir + "/#{@basename}") { Dir["*#{ext}"].sort }
+  end
 
   erb :edit, layout: :layout
+end
+
+get '/:folder/:version/view' do
+  require_signed_in_user
+
+  folder = params[:folder]
+  version_file = params[:version]
+
+  data_dir do
+    Dir.chdir(folder) { load_file_content(version_file, current_work_dir: true) }
+  end
 end
 
 post '/new' do
@@ -206,12 +239,22 @@ end
 post '/:filename' do
   require_signed_in_user
 
-  filename = params[:filename]
+  filename, basename, ext = file_base_ext_names(params[:filename])
+  version = Time.now.to_s
 
-  data_dir { File.write(filename, params[:content]) }
-
-  session[:message] = "#{filename} has been updated!"
-  redirect '/'
+  if edited?(filename, params[:content])
+    data_dir do
+      FileUtils.mkdir_p "#{basename}"
+      FileUtils.cp(filename, "#{basename}/#{version}#{ext}")
+      File.write(filename, params[:content])
+    end
+    session[:message] = "#{filename} has been updated!"
+    redirect '/'
+  else
+    status 422
+    session[:message] = "No changes were detected. Please submit an edit."
+    redirect "/#{filename}/edit"
+  end
 end
 
 post '/:filename/delete' do
@@ -270,15 +313,14 @@ post '/upload/image' do
 
   if !valid_img_url(img_url)
     session[:message] = 'Invalid image url. Please try again.'
+    status 415
     halt erb :upload, layout: :layout
   end
 
-  img_filename = img_url.split('/')
-                        .last[/.+(?=\..{2,4})/]
-                        .gsub(/\W/, '')
-                        .concat('.md')
-                      
-  img_str = "![#{img_filename}](#{img_url})"
+  img_filename = format_url_for_filename(img_url)
+  img_basename = img_filename[0..-4]
+  img_str = "![#{img_basename}](#{img_url})"
+  
   data_dir { File.write(img_filename, img_str) }
 
   session[:message] = "Image #{img_filename} has been successfully uploaded!"

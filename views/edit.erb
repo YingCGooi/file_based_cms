@@ -1,7 +1,24 @@
 <form action="/<%= params[:filename] %>" method="post">
-  <label for="content">Edit content of '<%= params[:filename] %>':</label>
+  <label for="content"><h3>Edit content of '<%= params[:filename] %>':</h3></label>
   <div>
     <textarea name="content" id="content" rows="20" cols="80"><%=@file%></textarea>
   </div>
   <button type="submit">Save Changes</button>
 </form>
+
+<br />
+<h4>Version History | <em>view previous versions here</em></h4>
+
+<ul>
+  <% if @versions && !@versions.empty? %>
+    <hr />
+    <% @versions.each do |version| %>
+      <li>
+        <a href="/<%=@basename%>/<%=version%>/view"><%= File.basename(version, ".*") %>
+        </a>
+      </li>
+    <% end %>
+  <% else %>
+    <p>No previous versions were found!</p>
+  <% end %>
+</ul>

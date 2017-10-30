@@ -11,4 +11,5 @@ require 'minitest/reporters'
 require 'rack/test'
 require 'fileutils'
 require 'yaml'
+require 'date'
 Minitest::Reporters.use!

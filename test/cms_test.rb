@@ -14,7 +14,9 @@ class CMSTest < Minitest::Test
 
   def setup
     Dir.mkdir('test/data') unless Dir.exist?('test/data')
-    File.write(credentials_file_path, "---\nadmin: $2a$10$O6ztkvgjtIR.wFpm71NrVuvPvilNynEaq0G.zmVm/jXB95FBZ.Zi2\n")
+    username_hash = "---\nadmin: "\
+      "$2a$10$O6ztkvgjtIR.wFpm71NrVuvPvilNynEaq0G.zmVm/jXB95FBZ.Zi2\n"
+    File.write(credentials_file_path, username_hash)
   end
 
   def teardown
@@ -61,14 +63,15 @@ class CMSTest < Minitest::Test
   end
 
   def test_markdown_render
-    duplicate_document "growing_your_own_web_framework.md"
+    create_document("growing_your_own_web_framework.md",
+      "### What is Rack\n```\nputs 'hello world!'\n```\n")
 
     get "/growing_your_own_web_framework.md", {}, admin_session
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
 
     assert_includes last_response.body, "<h3>What is Rack</h3>"
-    assert_match(/<code>.+<\/code>/, last_response.body)
+    assert_match(/<code>\s?.+\s?<\/code>/, last_response.body)
   end
 
   def test_editing_document
@@ -285,5 +288,59 @@ class CMSTest < Minitest::Test
     get '/'
     assert_equal 200, last_response.status
     assert_match(/signed in as hello/i, last_response.body)
+  end
+
+  def test_upload_image
+    get '/upload', {}, admin_session
+    assert_equal 200, last_response.status
+    assert_match(/Upload an image to CMS/, last_response.body)
+    assert_match(/<input.+type="text"/, last_response.body)
+    assert_match(/<button.+type="submit"/, last_response.body)
+
+    url = 'http://images5.fanpop.com/image/photos/28100000/'\
+      'Cute-kitty-animal-cubs-28185372-1920-1200.jpg'
+    post '/upload/image', upload: url
+    assert_equal 302, last_response.status
+    assert_match(/image.{0,100} has been successfully uploaded/i, session[:message])
+
+    filename = 'Cutekittyanimalcubs2818537219201200.md'
+    get '/' + filename
+    assert_equal 200, last_response.status
+    assert_match(/<img src=".+1200\.jpg"/, last_response.body)
+
+    url = 'http://www.fanpop.com/clubs/animal-cubs/'\
+    'images/28185372/title/cute-kitty-wallpaper'
+    post '/upload/image', upload: url
+    assert_equal 415, last_response.status
+    assert_match(/Invalid image url/, last_response.body)
+  end
+
+  def test_preserve_versions
+    create_document 'changes.txt', 'first version'
+
+    post '/changes.txt', { content: 'second version' }, admin_session
+    creation_time = Time.now.to_s
+    assert_equal 302, last_response.status
+
+    data_dir do
+      Dir["changes/*"].each do |filename|
+        assert_includes filename, creation_time
+      end
+    end
+
+    get '/changes.txt'
+    assert_includes 'second version', last_response.body
+
+    v1_content = data_dir { File.read("changes/#{creation_time}.txt") }
+    assert_includes v1_content, 'first version'
+
+    post '/changes.txt', { content: 'Third version!' }
+    creation_time = Time.now.to_s
+    assert_equal 302, last_response.status
+
+    post '/changes.txt', { content: ' ' }
+
+    get "/changes/#{creation_time.gsub(' ','%20')}.txt/view"
+    assert_includes 'Third version!', last_response.body
   end
 end

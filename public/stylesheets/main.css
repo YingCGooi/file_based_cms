@@ -53,7 +53,7 @@ ul li {
   padding-bottom: 10px;
 }
 
-.url-input {
+.url-input, input.new{
   width: 80%;
   height: 1.5em;
   font-size: 20px;
@@ -61,6 +61,16 @@ ul li {
   font-weight: 300;
   display: block;
   margin: 10px 0px;
+}
+
+button.restore {
+  margin-left: 1em;
+  width: 10em;
+  font-weight: 200;
+}
+
+li a{
+  font-size: 18px;
 }
 
 
