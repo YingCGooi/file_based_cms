@@ -2,12 +2,12 @@
 <form action="/users/signup" method="post">
   <div>
     <label for="username">Username:
-      <input type="text" name="username" value="<%=h(@username)%>"/>
+      <input type="text" name="username" value="<%=@username%>"/>
     </label>
   </div>
   <div>
     <label for="password">Password:
-      <input type="password" name="password" value="<%=h(@password)%>"/>
+      <input type="password" name="password" value="<%=@password%>"/>
     </label>
   </div>
   <button type="submit">Register Me!</button>

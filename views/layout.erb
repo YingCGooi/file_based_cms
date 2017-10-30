@@ -15,11 +15,11 @@
 
     <br />
 
-    <%= yield %>
+    <%== yield %>
 
     <hr />
     <footer>
-      <p><%= yield_content :username %></p>
+      <p><%== yield_content :username %></p>
       <% if !home_page? %>
         <a href="/">Home</a>
       <% end %>
