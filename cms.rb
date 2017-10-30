@@ -7,6 +7,7 @@ require 'tilt/erubis'
 require 'yaml'
 require 'bcrypt'
 require 'pry'
+require 'erubis'
 require File.join(File.dirname(__FILE__), 'environment')
 
 configure(:development) do
@@ -320,7 +321,7 @@ post '/upload/image' do
   img_filename = format_url_for_filename(img_url)
   img_basename = img_filename[0..-4]
   img_str = "![#{img_basename}](#{img_url})"
-  
+
   data_dir { File.write(img_filename, img_str) }
 
   session[:message] = "Image #{img_filename} has been successfully uploaded!"
