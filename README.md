@@ -1,5 +1,5 @@
 # File-based Content Management System
-___
+
 A file-based content management system that allows users to add, edit, delete, duplicate documents. Users can also upload images to the system as links.
 
 This application can read and parse Markdown and plain-text files. Images uploaded will be embedded as links in Markdown files. Users are able to view previous edit history of a given document.
