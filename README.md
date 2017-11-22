@@ -21,12 +21,14 @@ Then, open up a web browser and request `localhost:4567` in the URL address bar.
 
 ## Images
 
+The file names of uploaded images are automatically determined based on the URL given. Only valid image URLs (ending with .jpg, .png, .gif) are allowed.
+
 To upload an image:
 - Click 'Upload Image' at the bottom of the index page 
 - Copy and paste OR drag and drop an image URL into the form
 - Hit 'Upload' button
 - Your image will be created as a new `.md` document with the image embedded as a link
-- When it is viewed, the application will automatically retrieve the full image and display it in your browser
+- When the `.md` document containing the image is viewed, the application will automatically retrieve the full image and display it in your browser
 
 ## Edit History
 To enable and view history:
