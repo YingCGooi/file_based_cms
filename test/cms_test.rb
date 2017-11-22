@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 # Tests for Sinatra app
 class CMSTest < Minitest::Test
