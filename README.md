@@ -1,24 +1,24 @@
-*If you've never used OpeningAct before, this README will describe the what is contained in your project directory. If you've already used OpeningAct before, you can delete all the text in this file*
+# File-based Content Management System
 
-# Welcome to OpeningAct
+A file-based content management system that allows users to add, edit, delete, duplicate documents. Users can also upload images to the system as links.
 
-Your project is ready for development! However, there are a few things to point out:
+This application can read and parse Markdown and plain-text files. Images uploaded will be embedded as links in Markdown files. Users are able to view previous edit history of a given document.
 
-## Configuration
+## Installation
+To install dependencies:
 
-* Please read over the `environment.rb` file and complete Application Name and Author Name sections with the appropriate information. This file houses all our dependencies.
-* OpeningAct does not have database support yet, so set up your database and models in the `lib` folder.
-* A placeholder homepage has been created for you. Run `heroku local web` if you wish to see it. Otherwise, please replace it with your own.
+```
+bundle install
+```
 
-## Testing
+To run application:
 
-All your tests are housed in either the `test` or `spec` folders, depending on the test framework you specified.
+```
+bundle exec ruby cms.rb
+```
 
-Some failing tests have been created for you. To run the tests:
+Then, open up a web browser and request `localhost:4567` in the URL address bar.
 
+#### Heroku Incompatibility
 
-`bundle exec rake test`
-
-OR
-
-`bundle exec rake spec`
+Since this application is file-based, it is not compatible with Heroku. Any files created or any changes made to the files by the application will be discarded each time it goes to sleep.
