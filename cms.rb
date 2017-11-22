@@ -262,6 +262,9 @@ post '/:filename/delete' do
   filename = params[:filename]
   data_dir { File.delete(filename) }
 
+  _, basename, _ = file_base_ext_names(filename)
+  data_dir { FileUtils.remove_dir(basename) if Dir.exist?(basename) }
+
   session[:message] = "#{filename} was deleted."
   redirect '/'
 end
