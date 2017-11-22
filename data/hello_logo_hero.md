@@ -1,1 +1,0 @@
-![hello image](https://www.hello.com/img_/hello_logo_hero.png)
